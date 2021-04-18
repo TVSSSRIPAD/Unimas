@@ -8,7 +8,8 @@ public class Student {
     String email;
     String phone;
     Character gender;
-    String password;
+    String program;
+    String address;
     private String dob;
 
     public void setSroll(String sroll) {
@@ -39,8 +40,37 @@ public class Student {
         this.gender = gender;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+
+    public String getProgram() {
+        return program;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "sroll='" + sroll + '\'' +
+                ", sname='" + sname + '\'' +
+                ", batch=" + batch +
+                ", dept_id=" + dept_id +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", gender=" + gender +
+                ", program='" + program + '\'' +
+                ", address='" + address + '\'' +
+                ", dob='" + dob + '\'' +
+                '}';
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setDob(String dob) {
@@ -75,24 +105,8 @@ public class Student {
         return gender;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
-    @Override
-    public String toString() {
-        return "Student{" +
-                "sroll='" + sroll + '\'' +
-                ", sname='" + sname + '\'' +
-                ", batch=" + batch +
-                ", dept_id=" + dept_id +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", gender=" + gender +
-                ", password='" + password + '\'' +
-                ", dob='" + dob + '\'' +
-                '}';
-    }
+
 
     public String getDob() {
         return dob;
