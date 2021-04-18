@@ -2,18 +2,38 @@ package com.sripad.unimas.model;
 
 public class StudentGrades {
     String sroll;
-    String cname;
+    String cname, ctype;
     int grade;
-    int semno;
+    int semno, credits;
+
+
+    public StudentGrades(String sroll, String cname, String ctype, int grade, int semno, int credits) {
+        this.sroll = sroll;
+        this.cname = cname;
+        this.ctype = ctype;
+        this.grade = grade;
+        this.semno = semno;
+        this.credits = credits;
+    }
+
 
     public StudentGrades() {
     }
 
-    public StudentGrades(String sroll, String cname, int grade, int semno) {
-        this.sroll = sroll;
-        this.cname = cname;
-        this.grade = grade;
-        this.semno = semno;
+    public String getCtype() {
+        return ctype;
+    }
+
+    public void setCtype(String ctype) {
+        this.ctype = ctype;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public void setCredits(int credits) {
+        this.credits = credits;
     }
 
     public String getSroll() {

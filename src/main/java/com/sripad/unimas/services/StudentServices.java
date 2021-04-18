@@ -1,9 +1,6 @@
 package com.sripad.unimas.services;
 
-import com.sripad.unimas.model.RegisteredCourses;
-import com.sripad.unimas.model.Student;
-import com.sripad.unimas.model.StudentGPA;
-import com.sripad.unimas.model.StudentGrades;
+import com.sripad.unimas.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
 import java.util.List;
 @Component
 public class StudentServices {
@@ -36,20 +34,75 @@ public class StudentServices {
     }
     public List<RegisteredCourses> getStudentRegistrationDetails(String sroll){
         String sql = "SELECT * FROM registration natural join course where sroll = ?";
-        List<RegisteredCourses> courseList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(RegisteredCourses.class), sroll);
-        return courseList;
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(RegisteredCourses.class), sroll);
     }
 
     public List<StudentGrades> getGradesBySroll(String sroll){
-        String sql = "SELECT sroll, cname, grade, semno FROM score natural join course where sroll = ?";
-        List<StudentGrades> gradeList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StudentGrades.class), sroll);
-        return gradeList;
+        String sql = "SELECT sroll, cname, grade, semno, ctype,credits FROM score natural join course where sroll = ? order by semno";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StudentGrades.class), sroll);
     }
 
     public List<StudentGPA> getCGBySroll(String sroll){
-        String sql = "SELECT sroll,gpa, semno FROM GPALIST  where sroll = ?";
-        List<StudentGPA> gradeList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StudentGPA.class), sroll);
-        return gradeList;
+        String sql = "SELECT sroll,gpa, semno FROM GPALIST  where sroll = ? order by semno";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StudentGPA.class), sroll);
+    }
+
+    public boolean isRegistered(String sroll){
+        List<RegisteredCourses> courseList = getStudentRegistrationDetails(sroll);
+
+        String sql =  "SELECT batch FROM STUDENT WHERE SROLL = ?";
+        Object[] params = {sroll};
+        int batch = jdbcTemplate.queryForObject(sql, Integer.class, params);
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int reqSemno;
+
+        if(month >= 1 && month <=6){
+            if(year - batch <= 1){
+                reqSemno = 2;
+            }else if(year - batch <= 2){
+                reqSemno = 4;
+            }else if(year - batch <= 3){
+                reqSemno = 6;
+            }
+            else reqSemno = 8;
+        }else{
+            if(year - batch <= 0){
+                reqSemno = 1;
+            }else if(year - batch <= 1){
+                reqSemno = 3;
+            }else if(year - batch <= 2){
+                reqSemno = 5;
+            }
+            else reqSemno = 7;
+        }
+        for(RegisteredCourses rc: courseList){
+            if(reqSemno == rc.getSemno()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<OfferedCourses> getOfferedCourses(String sroll){
+        String sql =  "SELECT dept_id FROM STUDENT WHERE SROLL = ?";
+        Object[] params = {sroll};
+        int dept_id = jdbcTemplate.queryForObject(sql, Integer.class, params);
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int reqSemno;
+        String str = Integer.toString(year);
+
+        if(month <= 6){
+            str += 'S';
+        }else str += 'A';
+
+        System.out.println(str);
+        sql =  "SELECT course_id , cname ,ctype ,  semno , CREDITS FROM TEACHES T NATURAL JOIN COURSE WHERE T.YEAR = ? AND (DEPT_ID = ? or DEPT_ID = 3)";
+        Object[] params2 = {str, dept_id};
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(OfferedCourses.class), params2);
     }
 
     public List<Student> printAllStudents(){

@@ -3,13 +3,13 @@ package com.sripad.unimas.model;
 import java.util.List;
 
 public class StudentDetails {
-    List<RegisteredCourses> coursesList  ;
+
 
     List<StudentGrades> sgrades  ;
     List<StudentGPA> sgpa  ;
 
-    public StudentDetails(List<RegisteredCourses> coursesList, List<StudentGrades> sgrades, List<StudentGPA> sgpa) {
-        this.coursesList = coursesList;
+    public StudentDetails(  List<StudentGrades> sgrades, List<StudentGPA> sgpa) {
+
         this.sgrades = sgrades;
         this.sgpa = sgpa;
     }
@@ -17,19 +17,12 @@ public class StudentDetails {
     @Override
     public String toString() {
         return "StudentDetails{" +
-                "coursesList=" + coursesList +
+
                 ", sgrades=" + sgrades +
                 ", sgpa=" + sgpa +
                 '}';
     }
 
-    public List<RegisteredCourses> getCoursesList() {
-        return coursesList;
-    }
-
-    public void setCoursesList(List<RegisteredCourses> coursesList) {
-        this.coursesList = coursesList;
-    }
 
     public List<StudentGrades> getSgrades() {
         return sgrades;
