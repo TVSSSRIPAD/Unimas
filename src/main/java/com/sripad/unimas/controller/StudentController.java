@@ -1,16 +1,13 @@
 package com.sripad.unimas.controller;
 
 
-import com.sripad.unimas.model.AuthenticationRequest;
-import com.sripad.unimas.model.AuthenticationResponse;
-import com.sripad.unimas.model.Student;
+import com.sripad.unimas.model.*;
 import com.sripad.unimas.services.StudentServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 
 @RestController
@@ -25,13 +22,24 @@ public class StudentController {
         return studentService.printAllStudents();
     }
 
+    @GetMapping("/sroll/{sroll}")
+    public ResponseEntity<?> getStudentDetailsBySroll(@PathVariable String sroll){
+        List<RegisteredCourses> coursesList = studentService.getStudentRegistrationDetails(sroll);
+
+        List<StudentGrades> sgrades = studentService.getGradesBySroll(sroll);
+        List<StudentGPA> sgpa = studentService.getCGBySroll(sroll);
+
+        StudentDetails studentDetails = new StudentDetails(coursesList, sgrades, sgpa);
+        return ResponseEntity.status(200).body(studentDetails);
+    }
+
     @PostMapping("/auth")
     public ResponseEntity<?> authStudent(@RequestBody AuthenticationRequest auth){
-        Student s = studentService.authenticateStudent(auth.getUsername(), auth.getPassword());
+        Student s = studentService.authenticateStudent(auth.getEmail(), auth.getPassword());
         if(s.getSroll() != null){
             return ResponseEntity.ok(s);
         }else{
-            return ResponseEntity.status(400).body("Incorrect email or Pasword");
+            return ResponseEntity.status(400).body("Incorrect email or Password");
         }
     }
 

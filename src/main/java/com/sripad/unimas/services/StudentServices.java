@@ -1,6 +1,9 @@
 package com.sripad.unimas.services;
 
+import com.sripad.unimas.model.RegisteredCourses;
 import com.sripad.unimas.model.Student;
+import com.sripad.unimas.model.StudentGPA;
+import com.sripad.unimas.model.StudentGrades;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,15 +22,36 @@ public class StudentServices {
         Object[] params = {email};
         String obtainedPassword = jdbcTemplate.queryForObject(sql, String.class,params);
 
-        if(obtainedPassword == password){
+        System.out.println("Received : " + password + " obtained from db : " + obtainedPassword);
+
+        if(obtainedPassword.equals(password)){
             sql = "SELECT * FROM student where email = ?";
             List<Student> studentList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Student.class), email);
+            System.out.println(studentList.get(0));
             return studentList.get(0);
         }else{
             return new Student();
         }
 
     }
+    public List<RegisteredCourses> getStudentRegistrationDetails(String sroll){
+        String sql = "SELECT * FROM registration natural join course where sroll = ?";
+        List<RegisteredCourses> courseList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(RegisteredCourses.class), sroll);
+        return courseList;
+    }
+
+    public List<StudentGrades> getGradesBySroll(String sroll){
+        String sql = "SELECT sroll, cname, grade, semno FROM score natural join course where sroll = ?";
+        List<StudentGrades> gradeList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StudentGrades.class), sroll);
+        return gradeList;
+    }
+
+    public List<StudentGPA> getCGBySroll(String sroll){
+        String sql = "SELECT sroll,gpa, semno FROM GPALIST  where sroll = ?";
+        List<StudentGPA> gradeList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StudentGPA.class), sroll);
+        return gradeList;
+    }
+
     public List<Student> printAllStudents(){
         String sql = "SELECT * FROM student";
 
