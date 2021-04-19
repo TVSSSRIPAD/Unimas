@@ -9,39 +9,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 public class StudentController {
 
     @Autowired
     StudentServices studentService;
 
-    @GetMapping("/")
-    public String home(){
-        return "index.html";
-    }
 
-    @GetMapping("/studentpage")
-    public String studentPage(){
-        return "index.html";
-    }
-
-    @GetMapping("/studentprofile")
-    public String studentProfile(){
-        return "studentprofile.html";
-    }
 //    @GetMapping("/")
 //    @ResponseBody
 //    List<Student> all() {
 //        return studentService.printAllStudents();
 //    }
 
-    @GetMapping("/srollgrades/{sroll}")
+//    @PathVariable String sroll
+    @GetMapping("/srollgrades")
     @ResponseBody
-    public ResponseEntity<?> getStudentGradesBySroll(@PathVariable String sroll){
+    public ResponseEntity<?> getStudentGradesBySroll(@CookieValue(value="sroll" ) String sroll){
 
         List<StudentGrades> sgrades = studentService.getGradesBySroll(sroll);
         List<StudentGPA> sgpa = studentService.getCGBySroll(sroll);
@@ -52,7 +42,7 @@ public class StudentController {
 
     @GetMapping("/srollreg/{sroll}")
     @ResponseBody
-    public ResponseEntity<?> getStudentRegistrationBySroll(@PathVariable String sroll){
+    public ResponseEntity<?> getStudentRegistrationBySroll(@CookieValue(value="sroll" ) String sroll){
         List<RegisteredCourses> coursesList = studentService.getStudentRegistrationDetails(sroll);
         boolean registered = studentService.isRegistered(sroll);
         List<OfferedCourses> offeredCourses =  studentService.getOfferedCourses(sroll);
@@ -64,9 +54,15 @@ public class StudentController {
 
     @PostMapping("/auth")
     @ResponseBody
-    public ResponseEntity<?> authStudent(@RequestBody AuthenticationRequest auth){
+    public ResponseEntity<?> authStudent(@RequestBody AuthenticationRequest auth, HttpServletResponse response){
+
+
         Student s = studentService.authenticateStudent(auth.getEmail(), auth.getPassword());
         if(s.getSroll() != null){
+
+            response.addCookie( new Cookie("sroll", s.getSroll()) );
+            response.addCookie( new Cookie("program", s.getProgram()) );
+
             return ResponseEntity.ok(s);
         }else{
             return ResponseEntity.status(400).body("Incorrect email or Password");
