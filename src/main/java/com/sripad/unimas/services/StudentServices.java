@@ -15,6 +15,12 @@ public class StudentServices {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    public Student getStudent(String sroll ){
+        String sql = "SELECT * FROM STUDENT WHERE SROLL = ?";
+        Object[] params = {sroll};
+        return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Student.class), params);
+    }
+
     public Student authenticateStudent(String email, String password){
         String sql = "SELECT password FROM PERSON WHERE EMAIL = ?";
         Object[] params = {email};

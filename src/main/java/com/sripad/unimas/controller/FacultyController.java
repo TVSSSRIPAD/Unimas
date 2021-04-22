@@ -20,16 +20,15 @@ public class FacultyController {
     @Autowired
     FacultyServices facultyServices;
 
-//    @GetMapping("/faculty/{fid}")
-//    public ResponseEntity<?> getFacultyDetailsByID(@PathVariable String sroll){
-//        List<RegisteredCourses> coursesList = studentService.getStudentRegistrationDetails(sroll);
-//
-//        List<StudentGrades> sgrades = studentService.getGradesBySroll(sroll);
-//        List<StudentGPA> sgpa = studentService.getCGBySroll(sroll);
-//
-//        StudentDetails studentDetails = new StudentDetails(coursesList, sgrades, sgpa);
-//        return ResponseEntity.status(200).body(studentDetails);
-//    }
+    @GetMapping("/facprofile")
+    @ResponseBody
+    public ResponseEntity<?> getFaculty(@CookieValue(value="faculty_id") String fac_id){
+        if(fac_id == null ){
+            return ResponseEntity.status(400).body("Bad Request");
+        }
+        Faculty s = facultyServices.getFaculty(Integer.parseInt(fac_id));
+        return ResponseEntity.status(200).body(s);
+    }
 
     @PostMapping("/facultyauth")
     @ResponseBody
@@ -37,7 +36,7 @@ public class FacultyController {
         Faculty f = facultyServices.authenticateFaculty(auth.getEmail(), auth.getPassword());
         if(f.getEmail() != null){
             response.addCookie( new Cookie("faculty_id",  Integer.toString(f.getFaculty_id()) ) );
-
+            System.out.println(facultyServices.getDeptIfHOD(f.getFaculty_id()));
             return ResponseEntity.ok(f);
         }else{
             return ResponseEntity.status(400).body("Incorrect email or Password");
@@ -46,31 +45,23 @@ public class FacultyController {
 
     @GetMapping("/faccurr")
     @ResponseBody
-    public ResponseEntity<?> authFaculty1(@CookieValue(value="faculty_id" ) String fac_id){
-        Map<String, List<Object>> objs = facultyServices.getCurrentCourseStudents(Integer.parseInt(fac_id));
-        System.out.println(objs.size());
-        Object obj = new Object[]{objs.size(), objs};
+    public ResponseEntity<?> currStudents(@CookieValue(value="faculty_id" ) String fac_id){
+        Object obj = facultyServices.getCurrentCourseStudents(Integer.parseInt(fac_id)) ;
         return ResponseEntity.status(200).body(obj);
     }
 
     @GetMapping("/facall")
     @ResponseBody
     public ResponseEntity<?> allStudents(@CookieValue(value="faculty_id" ) String fac_id){
-        Map<String, List<Object>> objs = facultyServices.getAllCourseStudents(Integer.parseInt(fac_id));
-        System.out.println(objs.size());
-        Object obj = new Object[]{objs.size(), objs};
-        return ResponseEntity.status(200).body(obj);
+         Object objs = facultyServices.getAllCourseStudents(Integer.parseInt(fac_id));
+
+        return ResponseEntity.status(200).body(objs);
     }
 //
-//    @PostMapping("/faculty")
-//    ResponseEntity<String> addStudentController(@RequestBody Student stu){
-//        if(studentService.addStudent(stu)){
-//            return  new ResponseEntity<>("New Student added Successful", HttpStatus.OK);
-//        }
-//        else{
-//            return  new ResponseEntity<>("New Student could not be added. Transaction Failed", HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    @PostMapping("/faculty")
+    public ResponseEntity<String> giveGrades( ){
+         return new ResponseEntity<>("New Student could not be added. Transaction Failed", HttpStatus.BAD_REQUEST);
+    }
 //
 //    @PutMapping("/faculty")
 //    ResponseEntity<String> updateStudentController(@RequestBody Student stu){

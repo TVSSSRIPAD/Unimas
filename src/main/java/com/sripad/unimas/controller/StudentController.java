@@ -21,6 +21,14 @@ public class StudentController {
     @Autowired
     StudentServices studentService;
 
+    @GetMapping("/myprofile")
+    public ResponseEntity<?>  myProfile(@CookieValue(value="sroll") String sroll){
+        if(sroll.length() < 9){
+            return ResponseEntity.status(400).body("Bad Request");
+        }
+        Student s = studentService.getStudent(sroll);
+        return ResponseEntity.status(200).body(s);
+    }
 
 //    @GetMapping("/")
 //    @ResponseBody
@@ -32,7 +40,9 @@ public class StudentController {
     @GetMapping("/srollgrades")
     @ResponseBody
     public ResponseEntity<?> getStudentGradesBySroll(@CookieValue(value="sroll" ) String sroll){
-
+        if(sroll.length() < 9){
+            return ResponseEntity.status(400).body("Bad Request");
+        }
         List<StudentGrades> sgrades = studentService.getGradesBySroll(sroll);
         List<StudentGPA> sgpa = studentService.getCGBySroll(sroll);
 
@@ -40,9 +50,12 @@ public class StudentController {
         return ResponseEntity.status(200).body(studentDetails);
     }
 
-    @GetMapping("/srollreg/{sroll}")
+    @GetMapping("/srollreg")
     @ResponseBody
     public ResponseEntity<?> getStudentRegistrationBySroll(@CookieValue(value="sroll" ) String sroll){
+        if(sroll.length() < 9){
+            return ResponseEntity.status(400).body("Bad Request");
+        }
         List<RegisteredCourses> coursesList = studentService.getStudentRegistrationDetails(sroll);
         boolean registered = studentService.isRegistered(sroll);
         List<OfferedCourses> offeredCourses =  studentService.getOfferedCourses(sroll);
@@ -52,22 +65,7 @@ public class StudentController {
         return ResponseEntity.status(200).body(studentDetails);
     }
 
-    @PostMapping("/auth")
-    @ResponseBody
-    public ResponseEntity<?> authStudent(@RequestBody AuthenticationRequest auth, HttpServletResponse response){
 
-
-        Student s = studentService.authenticateStudent(auth.getEmail(), auth.getPassword());
-        if(s.getSroll() != null){
-
-            response.addCookie( new Cookie("sroll", s.getSroll()) );
-            response.addCookie( new Cookie("program", s.getProgram()) );
-
-            return ResponseEntity.ok(s);
-        }else{
-            return ResponseEntity.status(400).body("Incorrect email or Password");
-        }
-    }
 
     @PostMapping("/student")
     @ResponseBody

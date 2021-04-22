@@ -7,5 +7,41 @@
 </head>
 <body>
     Hi
+    <a href="/studentprofile">Click Here</a>
+    <form action="/temp" method = "post" id="mform">
+        <p id="cid">Current COurse ID</p>
+        <input type="text"     name="one"   value="foo"                        />
+        <input type="text"     name="two"   value="bar"    disabled="disabled" />
+        <input type="text"     name="three" value="first"                      />
+        <input type="text"     name="three" value="second"                     />
+
+        <input type="checkbox" name="four"  value="baz"                        />
+        <input type="checkbox" name="five"  value="baz"    checked="checked"   />
+        <input type="checkbox" name="six"   value="qux"    checked="checked" disabled="disabled" />
+        <input type="checkbox" name=""      value="seven"  checked="checked"   />
+
+        <input type="radio"    name="eight" value="corge"                      />
+        <input type="radio"    name="eight" value="grault" checked="checked"   />
+        <input type="radio"    name="eight" value="garply"                     />
+        <input type="submit" value="Submit" id = "click-me">
+    </form>
 </body>
+<script type = "text/javascript">
+
+    function GetCheckBoxListValues( )
+    {
+        var chkBox = document.getElementById('mform');
+        var options = chkBox.getElementsByTagName('input');
+        var listOfSpans = chkBox.getElementsByTagName('span');
+        for (var i = 0; i < options.length; i++)
+        {
+            if(options[i].checked)
+            {
+                console.log(options[i].name);
+            }
+        }
+    }
+    GetCheckBoxListValues();
+
+</script>
 </html>
