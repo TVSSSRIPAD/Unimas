@@ -131,33 +131,56 @@ function fillFormData(offeredCourses){
 
                     p.innerHTML = `<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                     Registering...`;
-                    let response = await axios({
-                        url:"http://localhost:8081/register",
-                        method:"post",
-                        data:regData
-                    })
-                    if(response.status==200){
-                        document.getElementById("info").innerHTML=
-                        `
+                    try{
+                        let response = await axios({
+                            url:"http://localhost:8081/register",
+                            method:"post",
+                            data:regData
+                        })
+                        if(response.status==200){
+                            document.getElementById("info").innerHTML=
+                                `
                         <div class="alert alert-success" role="alert">
                             Registration Successful!
                         </div>
                         `;
-                        //fillCourseTable(response.data,semno);
-                    }else{
-                        if(response.status==400){
-                            document.getElementById("info").innerHTML=
-                            `
-                            <div class="alert alert-danger" role="alert">
-                                ${response.data}
-                            </div>
-                            `
+
                         }
                     }
+                    catch(e){
+                        console.log(e.response.data);
+                        console.log(e.response);
+                        console.log(e.response.headers);
+                        document.getElementById("info").innerHTML=
+                            `
+                            <div class="alert alert-danger" role="alert">
+                                ${e.response.data}
+                            </div>
+                            `
+                    }
 
-                    console.log(response);
+                    // if(response.status==200){
+                    //     document.getElementById("info").innerHTML=
+                    //     `
+                    //     <div class="alert alert-success" role="alert">
+                    //         Registration Successful!
+                    //     </div>
+                    //     `;
+                    //     //fillCourseTable(response.data,semno);
+                    // }else{
+                    //     if(response.status==400){
+                    //         document.getElementById("info").innerHTML=
+                    //         `
+                    //         <div class="alert alert-danger" role="alert">
+                    //             ${response.data}
+                    //         </div>
+                    //         `
+                    //     }
+                    // }
+
+                    // console.log(response);
                     
-                    console.log(semno);
+                    // console.log(semno);
             });
         }
     

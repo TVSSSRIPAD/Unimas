@@ -97,22 +97,52 @@ public class StudentServices {
     }
 
     public List<OfferedCourses> getOfferedCourses(String sroll){
-        String sql =  "SELECT dept_id FROM STUDENT WHERE SROLL = ?";
+        String sql =  "SELECT * FROM STUDENT WHERE SROLL = ?";
         Object[] params = {sroll};
-        int dept_id = jdbcTemplate.queryForObject(sql, Integer.class, params);
+        List<Student> s = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Student.class), params);
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
-        int reqSemno;
+        int reqSemno, batch = s.get(0).getBatch();
         String str = Integer.toString(year);
 
         if(month <= 6){
             str += 'S';
         }else str += 'A';
 
+        if(month >= 1 && month <=6){
+            if(year - batch <= 1){
+                reqSemno = 2;
+            }else if(year - batch <= 2){
+                reqSemno = 4;
+            }else if(year - batch <= 3){
+                reqSemno = 6;
+            }
+            else reqSemno = 8;
+        }else{
+            if(year - batch <= 0){
+                reqSemno = 1;
+            }else if(year - batch <= 1){
+                reqSemno = 3;
+            }else if(year - batch <= 2){
+                reqSemno = 5;
+            }
+            else reqSemno = 7;
+        }
+
         System.out.println(str);
-        sql =  "SELECT course_id , cname ,ctype ,  semno , CREDITS FROM TEACHES T NATURAL JOIN COURSE WHERE T.YEAR = ? AND (DEPT_ID = ? or DEPT_ID = 3)";
-        Object[] params2 = {str, dept_id};
+        if(s.get(0).getProgram().equals("B.Tech")){
+            sql = "SELECT course_id , cname ,ctype ,  semno , CREDITS FROM TEACHES T NATURAL JOIN COURSE WHERE T.YEAR = ? AND SEMNO = ? " +
+                    "AND (DEPT_ID = ? OR DEPT_ID = 3) AND CTYPE NOT LIKE '%MTECH%'";
+        }
+        else{
+
+            sql = "SELECT course_id , cname ,ctype ,  semno , CREDITS FROM TEACHES T NATURAL JOIN COURSE WHERE T.YEAR = ? AND SEMNO = ? " +
+                    "AND DEPT_ID = ?  AND CTYPE LIKE '%MTECH%'";
+        }
+
+
+        Object[] params2 = {str, reqSemno,s.get(0).getDept_id()};
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(OfferedCourses.class), params2);
     }
 
