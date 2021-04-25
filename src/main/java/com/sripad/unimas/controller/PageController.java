@@ -36,6 +36,10 @@ public class PageController {
         cookie3.setHttpOnly(true);
         cookie3.setMaxAge(0);
         response.addCookie(cookie3);
+        Cookie cookie4 = new Cookie("dept_id", null);
+        cookie4.setHttpOnly(true);
+        cookie4.setMaxAge(0);
+        response.addCookie(cookie4);
         return "redirect:/";
     }
 

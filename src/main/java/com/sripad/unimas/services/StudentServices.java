@@ -2,12 +2,14 @@ package com.sripad.unimas.services;
 
 import com.sripad.unimas.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
+import java.sql.Types;
 import java.util.Calendar;
 import java.util.List;
 @Component
@@ -109,6 +111,24 @@ public class StudentServices {
         sql =  "SELECT course_id , cname ,ctype ,  semno , CREDITS FROM TEACHES T NATURAL JOIN COURSE WHERE T.YEAR = ? AND (DEPT_ID = ? or DEPT_ID = 3)";
         Object[] params2 = {str, dept_id};
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(OfferedCourses.class), params2);
+    }
+
+    public String registerStudent(String sroll, List<Integer> courseIDs){
+        String errors = null;
+        for(int x: courseIDs){
+            try{
+                int c = jdbcTemplate.update(
+                        "INSERT INTO registration (sroll, course_id) VALUES (?, ?)",
+                        sroll, x
+                );
+                System.out.println(c + " is C and x is " + x + " sroll is " + sroll);
+            }
+            catch (DataAccessException error){
+                errors += error.getCause().toString().substring(33);
+                System.out.println("Error is " + error.getCause().toString().substring(33)  );
+            }
+        }
+        return errors;
     }
 
     public List<Student> printAllStudents(){

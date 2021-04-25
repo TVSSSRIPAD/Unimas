@@ -22,12 +22,17 @@ public class FacultyController {
 
     @GetMapping("/facprofile")
     @ResponseBody
-    public ResponseEntity<?> getFaculty(@CookieValue(value="faculty_id") String fac_id){
+    public ResponseEntity<?> getFaculty(@CookieValue(value="faculty_id") String fac_id, HttpServletResponse response){
         if(fac_id == null ){
             return ResponseEntity.status(400).body("Bad Request");
         }
         Faculty s = facultyServices.getFaculty(Integer.parseInt(fac_id));
-        return ResponseEntity.status(200).body(s);
+        int dept_id = facultyServices.getDeptIfHOD(Integer.parseInt(fac_id));
+        Object[] obj = {s ,  dept_id };
+
+        response.addCookie( new Cookie("dept_id",Integer.toString(dept_id)) );
+
+        return ResponseEntity.status(200).body(obj);
     }
 
     @PostMapping("/facultyauth")

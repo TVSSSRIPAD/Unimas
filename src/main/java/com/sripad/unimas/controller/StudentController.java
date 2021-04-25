@@ -66,6 +66,18 @@ public class StudentController {
     }
 
 
+    @PostMapping("/register")
+    @ResponseBody
+    public ResponseEntity<?> register(@CookieValue(value="sroll" ) String sroll, @RequestBody List<Integer> courseIDs){
+        if(sroll.length() < 9){
+            return ResponseEntity.status(400).body("Bad Request");
+        }
+        String errors = studentService.registerStudent(sroll, courseIDs);
+        if(errors.length() > 0){
+            return ResponseEntity.status(400).body(errors);
+        }
+        else   return  ResponseEntity.status(200).body("All OK");
+    }
 
     @PostMapping("/student")
     @ResponseBody

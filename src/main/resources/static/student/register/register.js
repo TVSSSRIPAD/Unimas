@@ -130,13 +130,13 @@ function fillFormData(offeredCourses){
                     console.log(regData);
 
                     p.innerHTML = `<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-                    Registering...`
-                    /*let response = await axios({
-                        url:"https://jsonplaceholder.typicode.com/todos/",
+                    Registering...`;
+                    let response = await axios({
+                        url:"http://localhost:8081/register",
                         method:"post",
                         data:regData
-                    })*/
-                    //console.log(response);
+                    })
+                    console.log(response);
                     //fillCourseTable(response.data,semno);
                     console.log(semno);
             });
