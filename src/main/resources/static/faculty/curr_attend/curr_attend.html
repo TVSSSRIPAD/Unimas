@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <link rel="stylesheet" href="faculty/prev_grades/prev_grades.css">
-<!--    <link rel="stylesheet" href="prev_grades.css">-->
+    <link rel="stylesheet" href="faculty/curr_attend/curr_attend.css">
     <title>Grade Submission</title>
 </head>
 <body>
@@ -16,11 +15,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-              <li class="nav-item">
-                  <a class="nav-link" href="/curr_grades">Current Courses</span></a>
-              </li>
               <li class="nav-item active">
-                  <a class="nav-link" href="#">Past Courses</a>
+                  <a class="nav-link " href="/curr_grades">Current Courses</span></a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/prev_grades">Past Courses</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link" href="/curr_attend">Current Students Attendance</a>
@@ -35,28 +34,19 @@
         </div>
       </nav>
     <div class="container">
-      <h6 class="bg-dark text-white text-center p-2 mt-2">Courses</h6>
+      <h6 class="bg-dark text-white text-center p-2 mt-2">Current Courses</h6>
       
         <div class="list-group mx-auto mb-5" style="max-width: 700px;"  id="ccl">
           
         </div>
-        <h6 class="text-white bg-dark p-2 d-flex justify-content-center w-100"><span>Results</span> </h6>
+      
       <div id="cdata-view" class="d-flex flex-column">
         
         
-        
-      </div>
-      <div class="my-5 d-flex flex-column align-items-center">
-        
-        <canvas id="bar" style="max-height: 700px;max-width: 700px;">
-
-        </canvas>
       </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.0/chart.min.js" integrity="sha512-RGbSeD/jDcZBWNsI1VCvdjcDULuSfWTtIva2ek5FtteXeSjLfXac4kqkDRHVGf1TwsXCAqPTF7/EYITD0/CTqw==" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src = "faculty/prev_grades/prev_grades.js"></script>
-<!--    <script src = "prev_grades.js"></script>-->
+    <script src = "faculty/curr_attend/curr_attend.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>

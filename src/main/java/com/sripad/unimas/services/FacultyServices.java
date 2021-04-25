@@ -2,6 +2,7 @@ package com.sripad.unimas.services;
 
 
 import com.sripad.unimas.model.OfferedCourses;
+import com.sripad.unimas.model.faculty.Attend;
 import com.sripad.unimas.model.faculty.Faculty;
 import com.sripad.unimas.model.faculty.Grade;
 import javafx.util.Pair;
@@ -66,6 +67,25 @@ public class FacultyServices {
                 int c = jdbcTemplate.update(
                         "INSERT INTO score (sroll, course_id, grade) VALUES (?, ?, ?)",
                         x.getSroll(), x.getCourse_id(), x.getGrade()
+
+                );
+                System.out.println(c + " is C ");
+            }
+            catch (DataAccessException error){
+                errors += error.getCause().toString().substring(33);
+                System.out.println("Error is " + error.getCause().toString().substring(33)  );
+            }
+        }
+        return errors;
+    }
+
+    public String attendStudent(List<Attend> attends){
+        String errors = null;
+        for(Attend x: attends){
+            try{
+                int c = jdbcTemplate.update(
+                        "INSERT INTO ATTENDANCE (sroll, course_id, adatem status) VALUES (?, ?, ?)",
+                        x.getSroll(), x.getCourse_id(), x.getAdate(), x.getStatus()
 
                 );
                 System.out.println(c + " is C ");

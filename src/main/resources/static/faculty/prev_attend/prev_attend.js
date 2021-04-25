@@ -1,8 +1,8 @@
 let Bar;
 (function () {
-    //getAndFillData('http://localhost:8081/facall');
+    getAndFillData('http://localhost:8081/facall');
 })();
-let  data = [
+let data = [
     [
         "INTRO TO ML",
         "DISCRETE MATHS",
@@ -15,7 +15,7 @@ let  data = [
                 "SRIPAD",
                 2018,
                 4,
-                10,
+                "P",
                 16
             ],
             [
@@ -23,7 +23,7 @@ let  data = [
                 "DUSHYANTH",
                 2018,
                 4,
-                10,
+                "P",
                 16
             ],
             [
@@ -31,7 +31,7 @@ let  data = [
                 "STUDENT3",
                 2018,
                 4,
-                10,
+                "P",
                 16
             ],
             [
@@ -39,7 +39,7 @@ let  data = [
                 "STUDENT4",
                 2018,
                 4,
-                10,
+                "P",
                 16
             ]
         ],
@@ -49,7 +49,7 @@ let  data = [
                 "SRIPAD",
                 2018,
                 3,
-                9,
+                "A",
                 10
             ],
             [
@@ -57,7 +57,7 @@ let  data = [
                 "DUSHYANTH",
                 2018,
                 3,
-                10,
+                "A",
                 10
             ],
             [
@@ -65,7 +65,7 @@ let  data = [
                 "STUDENT3",
                 2018,
                 3,
-                10,
+                "P",
                 10
             ],
             [
@@ -73,7 +73,7 @@ let  data = [
                 "STUDENT4",
                 2018,
                 3,
-                10,
+                "A",
                 10
             ]
         ],
@@ -83,7 +83,7 @@ let  data = [
                 "SRIPAD",
                 2018,
                 1,
-                10,
+                "P",
                 1
             ],
             [
@@ -91,7 +91,7 @@ let  data = [
                 "DUSHYANTH",
                 2018,
                 1,
-                10,
+                "P",
                 1
             ],
             [
@@ -99,7 +99,7 @@ let  data = [
                 "STUDENT3",
                 2018,
                 1,
-                10,
+                "A",
                 1
             ],
             [
@@ -107,7 +107,7 @@ let  data = [
                 "STUDENT4",
                 2018,
                 1,
-                10,
+                "P",
                 1
             ]
         ]
@@ -115,7 +115,6 @@ let  data = [
     3
 ];
 fillData(data);
-
 function fillViewData(current_course, data) {
     let current_sem = data[0][3];
     let current_batch = data[0][2];
@@ -143,7 +142,7 @@ function fillViewData(current_course, data) {
 
         <tr> <th>S.no</th><th>Student Name </th>
          <th>Roll No </th>
-         <th>Grade </th>
+         <th>Attendance </th>
         </tr>
         `
     let j = 0;
@@ -172,14 +171,16 @@ function fillViewData(current_course, data) {
         </table>
         `;
     k.innerHTML= x;
-    let ithGrade=[];
-    for(let i=0;i<=10;i++){
-        ithGrade.push(0);
+    let ithAttendance=[];
+    for(let i=0;i<=1;i++){
+        ithAttendance.push(0);
     }
     for(let i=0;i<data.length;i++){
-        ithGrade[data[i][4]]++;
+        if(data[i][4]=="A")ithAttendance[0]++;
+        if(data[i][4]=="P")ithAttendance[1]++;
     }
-    drawBar(document.getElementById("bar"),ithGrade,[0,1,2,3,4,5,6,7,8,9,10])
+    console.log("adlsagj",ithAttendance)
+    drawBar(document.getElementById("bar"),ithAttendance,["A","P"])
     console.log(data);
 
 
@@ -238,44 +239,26 @@ function drawBar(cxt,grades,labels){
         Bar.destroy();
     }
     let _data = {
-        labels:labels,
-        datasets:[
-            {
-                label:'Grades',
-                fill:false,
-                data:grades,
-                borderColor:'rgb(0,0,0)',
-                backgroundColor:'rgb(0,0,0)'
-            }
-        ]
+        labels: [
+            'Absent','Present'
+          ],
+          datasets: [{
+            label: 'Attendance',
+            data: grades,
+            backgroundColor: [
+              'rgb(50,50,50)',
+              'rgb(255, 255, 255)'
+            ],
+            borderColor:"rgb(0,0,0)",
+            hoverOffset: 1
+          }]
     }
     let _options = {
-        
-            scales: {
-                y: {
-                    title:{
-                        display:true,
-                        text:"Count(Students)",
-                        font: {
-                            size: 15
-                        }
-                    }
-                },
-                x:{
-                    title:{
-                        display:true,
-                        text:"Grade",
-                        font: {
-                            size: 15
-                        }
-                    }
-                }
-            }
-        
     }
+    console.log(_data);
     Bar = new Chart(cxt,
         {
-            type:'bar',
+            type:'pie',
             data:_data,
             options:_options
         });

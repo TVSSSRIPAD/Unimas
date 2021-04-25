@@ -118,7 +118,7 @@ public class PageController {
             System.out.println("Good try..");
             return "redirect:/";
         }
-        return "faculty/curr_attend.html";
+        return "faculty/curr_attend/curr_attend.html";
     }
 
 }

@@ -165,6 +165,6 @@ function fillFormData(offeredCourses){
 }
 (function(){
     
-   //getDataAndFill('http://localhost:8081/srollreg');
+   getDataAndFill('http://localhost:8081/srollreg');
    //getDataAndFill('https://jsonplaceholder.typicode.com/todos/1');
 })();

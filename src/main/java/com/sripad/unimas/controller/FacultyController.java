@@ -2,6 +2,7 @@ package com.sripad.unimas.controller;
 
 import com.sripad.unimas.model.*;
 
+import com.sripad.unimas.model.faculty.Attend;
 import com.sripad.unimas.model.faculty.Faculty;
 import com.sripad.unimas.model.faculty.Grade;
 import com.sripad.unimas.services.FacultyServices;
@@ -68,6 +69,19 @@ public class FacultyController {
     }
 //
 //
+@PostMapping("/attendstudents")
+@ResponseBody
+public ResponseEntity<?> attend(@CookieValue(value="faculty_id" ) String fac_id, @RequestBody List<Attend> attend){
+    if(fac_id == "-1"){
+        return ResponseEntity.status(400).body("Bad Request");
+    }
+    String errors = facultyServices.attendStudent(attend);
+    if(errors != null && errors.length() > 0){
+        return ResponseEntity.status(400).body(errors);
+    }
+    else   return  ResponseEntity.status(200).body("All OK");
+}
+
     @PostMapping("/gradestudents")
     @ResponseBody
     public ResponseEntity<?> register(@CookieValue(value="faculty_id" ) String fac_id, @RequestBody List<Grade> grades){
