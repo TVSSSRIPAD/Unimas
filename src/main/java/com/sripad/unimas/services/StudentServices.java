@@ -157,7 +157,10 @@ public class StudentServices {
                 System.out.println(c + " is C and x is " + x + " sroll is " + sroll);
             }
             catch (DataAccessException error){
-                errors += error.getCause().toString().substring(33);
+
+                String lines[] =  error.getCause().toString().substring(33).split("\\r?\\n");
+                errors += lines[0];
+                errors += "\n";
                 System.out.println("Error is " + error.getCause().toString().substring(33)  );
             }
         }
