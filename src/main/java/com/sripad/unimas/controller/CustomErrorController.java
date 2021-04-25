@@ -1,4 +1,4 @@
-package com.sripad.unimas.services;
+package com.sripad.unimas.controller;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 

@@ -30,11 +30,25 @@ public class StudentController {
         return ResponseEntity.status(200).body(s);
     }
 
-//    @GetMapping("/")
-//    @ResponseBody
-//    List<Student> all() {
-//        return studentService.printAllStudents();
-//    }
+    @GetMapping("/getcurrattend")
+    @ResponseBody
+    public ResponseEntity<?> getCurrAttend(@CookieValue(value="sroll") String sroll) {
+        if(sroll.length() < 9){
+            return ResponseEntity.status(400).body("Bad Request");
+        }
+        return ResponseEntity.status(200).body(studentService.getCurrentAttendance(sroll));
+    }
+
+
+    @GetMapping("/getattend")
+    @ResponseBody
+    public ResponseEntity<?> getAttend(@CookieValue(value="sroll") String sroll) {
+        if(sroll.length() < 9){
+            return ResponseEntity.status(400).body("Bad Request");
+        }
+        return ResponseEntity.status(200).body(studentService.getAttendance(sroll));
+    }
+
 
 //    @PathVariable String sroll
     @GetMapping("/srollgrades")

@@ -136,8 +136,27 @@ function fillFormData(offeredCourses){
                         method:"post",
                         data:regData
                     })
+                    if(response.status==200){
+                        document.getElementById("info").innerHTML=
+                        `
+                        <div class="alert alert-success" role="alert">
+                            Registration Successful!
+                        </div>
+                        `;
+                        //fillCourseTable(response.data,semno);
+                    }else{
+                        if(response.status==400){
+                            document.getElementById("info").innerHTML=
+                            `
+                            <div class="alert alert-danger" role="alert">
+                                ${response.data}
+                            </div>
+                            `
+                        }
+                    }
+
                     console.log(response);
-                    //fillCourseTable(response.data,semno);
+                    
                     console.log(semno);
             });
         }
@@ -146,6 +165,6 @@ function fillFormData(offeredCourses){
 }
 (function(){
     
-   getDataAndFill('http://localhost:8081/srollreg');
-   
+   //getDataAndFill('http://localhost:8081/srollreg');
+   //getDataAndFill('https://jsonplaceholder.typicode.com/todos/1');
 })();

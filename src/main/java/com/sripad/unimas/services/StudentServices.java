@@ -10,8 +10,11 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+
 @Component
 public class StudentServices {
     @Autowired
@@ -129,6 +132,45 @@ public class StudentServices {
             }
         }
         return errors;
+    }
+
+    public List<Object> getAttendance(String sroll){
+        String sql =  "SELECT C.CNAME, C.COURSE_ID, K.TOTAL_DAYS,K.PRESENT_DAYS FROM COURSE C, (SELECT * FROM (SELECT COURSE_ID, COUNT(*) AS TOTAL_DAYS FROM ATTENDANCE WHERE SROLL = ? GROUP BY COURSE_ID) NATURAL JOIN (SELECT COURSE_ID, COUNT(*) AS PRESENT_DAYS FROM ATTENDANCE WHERE STATUS = 'P' AND SROLL = ?    GROUP BY COURSE_ID)) K WHERE C.COURSE_ID = K.COURSE_ID ORDER BY COURSE_ID DESC ";
+        Object[] params = {sroll, sroll};
+        List<Map<String, Object>>  rows = jdbcTemplate.queryForList(sql, params);
+        List<Object> attendance = new ArrayList<>();
+        for (Map<String, Object> rowMap : rows) {
+            Object [] obj = new Object[]{rowMap.get("CNAME"), rowMap.get("COURSE_ID"), rowMap.get("PRESENT_DAYS"), rowMap.get("TOTAL_DAYS")  };
+            attendance.add(obj);
+        }
+        return attendance;
+    }
+
+
+    public List<Object> getCurrentAttendance(String sroll){
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+
+        String str = Integer.toString(year);
+
+        if(month <= 6){
+            month = 1;
+        }else month = 7;
+
+        String mm = "0" + Integer.toString(month);
+
+        String mm2 = "0" + Integer.toString(month + 5);
+
+        String sql =  "SELECT C.CNAME, C.COURSE_ID,K.ADATE FROM COURSE C,  (SELECT COURSE_ID, ADATE FROM ATTENDANCE WHERE STATUS = 'A' AND  ADATE > TO_DATE('01-" + mm +"-" + str  + "', 'DD-MM-YYYY' ) AND  ADATE <  TO_DATE('30-" + mm2 +"-" + str  + "', 'DD-MM-YYYY' )  AND SROLL = ? ) K WHERE C.COURSE_ID = K.COURSE_ID ";
+        Object[] params = {sroll};
+        List<Map<String, Object>>  rows = jdbcTemplate.queryForList(sql, params);
+        List<Object> attendance = new ArrayList<>();
+        for (Map<String, Object> rowMap : rows) {
+            Object [] obj = new Object[]{rowMap.get("CNAME"), rowMap.get("COURSE_ID"), rowMap.get("ADATE")   };
+            attendance.add(obj);
+        }
+        return attendance;
     }
 
     public List<Student> printAllStudents(){

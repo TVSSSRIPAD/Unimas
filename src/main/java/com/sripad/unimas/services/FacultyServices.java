@@ -3,8 +3,10 @@ package com.sripad.unimas.services;
 
 import com.sripad.unimas.model.OfferedCourses;
 import com.sripad.unimas.model.faculty.Faculty;
+import com.sripad.unimas.model.faculty.Grade;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -20,8 +22,6 @@ public class FacultyServices {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    NamedParameterJdbcTemplate jdbc;
 
     public Faculty getFaculty(int fid ){
         String sql = "SELECT * FROM Faculty WHERE Faculty_id = ?";
@@ -59,6 +59,24 @@ public class FacultyServices {
     }
 
 
+    public String gradeStudent(List<Grade> grades){
+        String errors = null;
+        for(Grade x: grades){
+            try{
+                int c = jdbcTemplate.update(
+                        "INSERT INTO score (sroll, course_id, grade) VALUES (?, ?, ?)",
+                        x.getSroll(), x.getCourse_id(), x.getGrade()
+
+                );
+                System.out.println(c + " is C ");
+            }
+            catch (DataAccessException error){
+                errors += error.getCause().toString().substring(33);
+                System.out.println("Error is " + error.getCause().toString().substring(33)  );
+            }
+        }
+        return errors;
+    }
     public Object getCurrentCourseStudents(int faculty_id){
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
@@ -70,9 +88,15 @@ public class FacultyServices {
             str += 'S';
         }else str += 'A';
 
-        String sql2 =  "SELECT C.CNAME, R.SROLL,S.SNAME,S.BATCH, C.SEMNO,C.COURSE_ID FROM TEACHES T , REG_TOREAD R, STUDENT S, COURSE C " +
-                "WHERE C.COURSE_ID = T.COURSE_ID AND S.SROLL = R.SROLL AND R.TOREAD = ? AND T.YEAR = ?  AND T.course_id =  R.course_id AND T.FACULTY_ID = ?";
-        Object[] params2 = {year , str,faculty_id };
+        String sql2 = "SELECT K.CNAME, K.SEMNO,K.COURSE_ID,L.SNAME,L.SROLL,L.BATCH FROM (SELECT C.CNAME, C.SEMNO,C.COURSE_ID  FROM TEACHES T , COURSE C WHERE T.COURSE_ID = C.COURSE_ID AND T.YEAR = ? AND T.FACULTY_ID = ?) K,  " +
+                " (SELECT S.SROLL, S.SNAME, S.BATCH , R.COURSE_ID FROM STUDENT S, REG_TOREAD R  WHERE S.SROLL = R.SROLL AND R.TOREAD = ? AND " +
+                "(S.SROLL,R.COURSE_ID) IN ((SELECT SROLL, COURSE_ID FROM REGISTRATION R ) MINUS (SELECT SROLL, COURSE_ID FROM SCORE G)) ) L WHERE K.COURSE_ID = L.COURSE_ID";
+
+
+
+//        String sql2 =  "SELECT C.CNAME, R.SROLL,S.SNAME,S.BATCH, C.SEMNO,C.COURSE_ID FROM TEACHES T , REG_TOREAD R, STUDENT S, COURSE C " +
+//                "WHERE C.COURSE_ID = T.COURSE_ID AND S.SROLL = R.SROLL AND R.TOREAD = ? AND T.YEAR = ?  AND T.course_id =  R.course_id AND T.FACULTY_ID = ?";
+        Object[] params2 = { str,faculty_id, year };
 
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql2, params2);
 

@@ -71,15 +71,15 @@ function fillViewData(current_course, data) {
         for(let i=0;i<gradeIP.length;i++){
             
                 console.log(gradeIP[i].value);
-                gradeData.push({sroll:gradeIP[i].name,course_id:course_id,grade:(gradeIP[i].value).length==0? "0":(gradeIP[i].value).length});
+                gradeData.push({sroll:gradeIP[i].name,course_id:course_id,grade:(gradeIP[i].value).length==0? "0":(gradeIP[i].value)});
         }
         console.log(gradeData);
-        /*let response = await axios({
-            url:"",
+        let response = await axios({
+            url:"http://localhost:8081/gradestudents",
             method:"post",
             data:gradeData
         });
-        */
+
         //console.log(response.data);
         e.target.innerHTML = `
         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
