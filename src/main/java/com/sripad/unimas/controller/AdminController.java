@@ -59,16 +59,19 @@ public class AdminController {
     @PutMapping("/updatepassword")
     @ResponseBody
     public  ResponseEntity<?> updatePassword(@CookieValue(value="dept_id") String dept_id, @RequestBody AuthenticationRequest req){
-        System.out.println("Hi");
+        System.out.println(req.getEmail() + " oo " + req.getPassword());
         if(dept_id == null || dept_id.equals("-1")){
-            if(adminServices.updatePassword(req.getEmail(), req.getPassword()) > 0){
+            return  new ResponseEntity<>("Password couldnot be updated. Transaction Failed2", HttpStatus.BAD_REQUEST);
+        }else{
+            int x = adminServices.updatepassword(req.getEmail(), req.getPassword());
+
+            System.out.println(x);
+            if(x > 0){
                 return  new ResponseEntity<>("Password updated Successfully", HttpStatus.OK);
             }
             else{
                 return  new ResponseEntity<>("Password couldnot be updated. Transaction Failed", HttpStatus.BAD_REQUEST);
             }
-        }else{
-            return  new ResponseEntity<>("Password couldnot be updated. Transaction Failed", HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -14,10 +14,11 @@ public class AdminServices {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public int updatePassword(String email , String password){
+    public int updatepassword(String email , String password){
         System.out.println(email + " oo " + password);
-        return jdbcTemplate.update("UPDATE PERSON SET PASSWORD=?  WHERE EMAIL = ?",
-                password, email);
+//        int x =
+//        System.out.println(x);
+        return jdbcTemplate.update("UPDATE PERSON SET PASSWORD= ?  WHERE EMAIL = ?", password,email);
     }
 
     public List<Student> getStudents(int dept_id){
