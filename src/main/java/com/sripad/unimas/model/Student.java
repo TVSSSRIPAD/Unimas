@@ -1,5 +1,7 @@
 package com.sripad.unimas.model;
 
+import java.util.Date;
+
 public class Student {
     String sroll;
     String sname;
@@ -10,7 +12,7 @@ public class Student {
     Character gender;
     String program;
     String address;
-    private String dob;
+    Date dob;
 
     public void setSroll(String sroll) {
         this.sroll = sroll;
@@ -73,7 +75,7 @@ public class Student {
         this.address = address;
     }
 
-    public void setDob(String dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 
@@ -108,7 +110,7 @@ public class Student {
 
 
 
-    public String getDob() {
+    public Date getDob() {
         return dob;
     }
 }

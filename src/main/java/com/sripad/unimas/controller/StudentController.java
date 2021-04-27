@@ -58,9 +58,9 @@ public class StudentController {
             return ResponseEntity.status(400).body("Bad Request");
         }
         List<StudentGrades> sgrades = studentService.getGradesBySroll(sroll);
-        List<StudentGPA> sgpa = studentService.getCGBySroll(sroll);
-
-        StudentDetails studentDetails = new StudentDetails( sgrades, sgpa);
+//        List<StudentGPA> sgpa = studentService.getCGBySroll(sroll);
+        List<StudentGPA> sgpa2 = studentService.getGrades(sroll);
+        StudentDetails studentDetails = new StudentDetails( sgrades, sgpa2);
         return ResponseEntity.status(200).body(studentDetails);
     }
 
@@ -96,18 +96,20 @@ public class StudentController {
     @PostMapping("/student")
     @ResponseBody
     public ResponseEntity<String> addStudentController(@RequestBody Student stu){
-        if(studentService.addStudent(stu)){
-            return  new ResponseEntity<>("New Student added Successful", HttpStatus.OK);
+        String sroll = studentService.addStudent(stu,"pass");
+        System.out.println("Hi " + sroll);
+        if(sroll.length() == 9){
+            return  new ResponseEntity<>("New Student added Successful" + " Sroll is " + sroll, HttpStatus.OK);
         }
         else{
-            return  new ResponseEntity<>("New Student could not be added. Transaction Failed", HttpStatus.BAD_REQUEST);
+            return  new ResponseEntity<>("New Student could not be added. Transaction Failed. Error is : " + sroll, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("/student")
     @ResponseBody
     public ResponseEntity<String> updateStudentController(@RequestBody Student stu){
-        if(studentService.updateStudent(stu)){
+        if(studentService.updateStudent(stu) > 0){
             return  new ResponseEntity<>("Student modified Successfully", HttpStatus.OK);
         }
         else{

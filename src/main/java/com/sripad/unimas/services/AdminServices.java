@@ -14,6 +14,12 @@ public class AdminServices {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    public int updatePassword(String email , String password){
+        System.out.println(email + " oo " + password);
+        return jdbcTemplate.update("UPDATE PERSON SET PASSWORD=?  WHERE EMAIL = ?",
+                password, email);
+    }
+
     public List<Student> getStudents(int dept_id){
         String sql = "SELECT * FROM Student WHERE DEPT_ID = ? ORDER BY BATCH DESC";
         Object[] params = {dept_id};

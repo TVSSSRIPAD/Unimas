@@ -6,19 +6,21 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class StudentServices {
     @Autowired
     JdbcTemplate jdbcTemplate;
+
 
     public Student getStudent(String sroll ){
         String sql = "SELECT * FROM STUDENT WHERE SROLL = ?";
@@ -51,6 +53,25 @@ public class StudentServices {
     public List<StudentGrades> getGradesBySroll(String sroll){
         String sql = "SELECT sroll, cname, grade, semno, ctype,credits FROM score natural join course where sroll = ? order by semno";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StudentGrades.class), sroll);
+    }
+
+    public List<StudentGPA> getGrades(String sroll){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("COMPUTE_GRADE");
+        Map<String , Object> inParams = new HashMap<>();
+        inParams.put("SROLL", sroll);
+        List<StudentGPA> sgpa = new ArrayList<>();
+
+        for(int i = 1; i <= 8; i++){
+
+            inParams.put("SEM", i);
+            SqlParameterSource in  = new MapSqlParameterSource(inParams);
+            Map<String, Object> out = jdbcCall.execute(in);
+//            System.out.println(out.get("GPA"));
+            if(((BigDecimal)out.get("GPA")).floatValue() > 0)
+            sgpa.add( new StudentGPA(sroll, ((BigDecimal)out.get("GPA")).floatValue(), i));
+
+        }
+        return sgpa;
     }
 
     public List<StudentGPA> getCGBySroll(String sroll){
@@ -180,7 +201,7 @@ public class StudentServices {
     }
 
 
-    public List<Object> getCurrentAttendance(String sroll){
+    public Object getCurrentAttendance(String sroll){
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
@@ -195,15 +216,22 @@ public class StudentServices {
 
         String mm2 = "0" + Integer.toString(month + 5);
 
-        String sql =  "SELECT C.CNAME, C.COURSE_ID,K.ADATE FROM COURSE C,  (SELECT COURSE_ID, ADATE FROM ATTENDANCE WHERE STATUS = 'A' AND  ADATE > TO_DATE('01-" + mm +"-" + str  + "', 'DD-MM-YYYY' ) AND  ADATE <  TO_DATE('30-" + mm2 +"-" + str  + "', 'DD-MM-YYYY' )  AND SROLL = ? ) K WHERE C.COURSE_ID = K.COURSE_ID ";
+        String sql =  "SELECT C.CNAME, C.COURSE_ID,K.ADATE,K.STATUS FROM COURSE C,  (SELECT STATUS, COURSE_ID, ADATE FROM ATTENDANCE WHERE   ADATE > TO_DATE('01-" + mm +"-" + str  + "', 'DD-MM-YYYY' ) AND  ADATE <  TO_DATE('30-" + mm2 +"-" + str  + "', 'DD-MM-YYYY' )  AND SROLL = ? ) K WHERE C.COURSE_ID = K.COURSE_ID ";
         Object[] params = {sroll};
         List<Map<String, Object>>  rows = jdbcTemplate.queryForList(sql, params);
         List<Object> attendance = new ArrayList<>();
+        Set<String> courses = new HashSet<>();
         for (Map<String, Object> rowMap : rows) {
-            Object [] obj = new Object[]{rowMap.get("CNAME"), rowMap.get("COURSE_ID"), rowMap.get("ADATE")   };
+            String dd = ((Date)(rowMap.get("ADATE"))).toString().substring(0,10);
+            Object [] obj = new Object[]{rowMap.get("CNAME"), rowMap.get("COURSE_ID"), dd , rowMap.get("STATUS")  };
             attendance.add(obj);
+            if(rowMap.get("STATUS").equals("A"))
+            System.out.println( dd );
+            courses.add((String )rowMap.get("CNAME"));
         }
-        return attendance;
+
+        Object obj = new Object[]{courses, attendance, courses.size()};
+        return obj;
     }
 
     public List<Student> printAllStudents(){
@@ -217,31 +245,44 @@ public class StudentServices {
         return studentList;
     }
 
-    public boolean addStudent(Student s){
-        SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate);
-        insertActor.withTableName("student");
+    public String addStudent(Student s, String password){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("ADD_STUDENT");
+        Map<String , Object> inParams = new HashMap<>();
+        inParams.put("SNAME", s.getSname());
+        inParams.put("BATCH", s.getBatch());
+        inParams.put("DEPT", s.getDept_id());
+        inParams.put("EMAIL", s.getEmail());
+        inParams.put("PHONE", s.getPhone());
+        inParams.put("GENDER", s.getGender());
+        inParams.put("DOB", s.getDob());
+        inParams.put("PROGRAM", s.getProgram());
+        inParams.put("ADDRESS", s.getAddress());
+        inParams.put("PASSWORD", password);
+        System.out.println("Here!");
 
+        SqlParameterSource in  = new MapSqlParameterSource(inParams);
+        try{
+            System.out.println(s);
+            Map<String, Object> out = jdbcCall.execute(in);
+            System.out.println(out.get("SROLL2"));
+            return ((String)out.get("SROLL2"));
+        }
+        catch(DataAccessException error){
+            String errors = null;
+            String lines[] =  error.getCause().toString().split("\\r?\\n");
+            errors += lines[0];
+            errors += "\n";
+            System.out.println("Error is " + error.getCause().toString()  );
+            return errors;
+        }
 
-        BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(s);
-
-        int result = insertActor.execute(paramSource);
-
-        if (result > 0) {
-            System.out.println("Insert successfully.");
-            return true;
-        }else return false;
     }
 
-    public boolean updateStudent(Student s){
 
-        String sql = "UPDATE STUDENT SET SNAME=?,   PHONE = ?, ADDRESS = ? WHERE SROLL=?";
-        Object[] params = {s.getSname(),  s.getPhone(), s.getAddress(),s.getSroll()};
-        int result = jdbcTemplate.update(sql, params);
+    public int updateStudent(Student s){
+//        System.out.println("Hi");
+            return jdbcTemplate.update("UPDATE STUDENT SET SNAME=?,   PHONE = ?, ADDRESS = ? WHERE SROLL=?",
+                s.getSname(),  s.getPhone(), s.getAddress(),s.getSroll());
 
-        if (result > 0) {
-            System.out.println("Update successfully.");
-            return true;
-        }
-        else return false;
     }
 }

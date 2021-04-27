@@ -3,6 +3,7 @@ package com.sripad.unimas.controller;
 import com.sripad.unimas.model.*;
 
 import com.sripad.unimas.model.faculty.Attend;
+import com.sripad.unimas.model.faculty.CourseList;
 import com.sripad.unimas.model.faculty.Faculty;
 import com.sripad.unimas.model.faculty.Grade;
 import com.sripad.unimas.services.FacultyServices;
@@ -51,6 +52,29 @@ public class FacultyController {
         }else{
             return ResponseEntity.status(400).body("Incorrect email or Password");
         }
+    }
+
+
+
+    @GetMapping("/offercourses")
+    @ResponseBody
+    public ResponseEntity<?> offerCourses(@CookieValue(value="faculty_id" ) String fac_id){
+        Object obj = facultyServices.offerCoursesList(Integer.parseInt(fac_id)) ;
+        return ResponseEntity.status(200).body(obj);
+    }
+
+
+    @GetMapping("/mycourses")
+    @ResponseBody
+    public ResponseEntity<?> myCourses(@CookieValue(value="faculty_id" ) String fac_id){
+        Object obj = facultyServices.myCourses(Integer.parseInt(fac_id)) ;
+        return ResponseEntity.status(200).body(obj);
+    }
+
+    @PostMapping("/offercourses")
+    public ResponseEntity<?> offeredCourses(@CookieValue(value="faculty_id" ) String fac_id, @RequestBody CourseList cids){
+        Object obj = facultyServices.offerCourses(Integer.parseInt(fac_id), cids.getCids()) ;
+        return ResponseEntity.status(200).body(obj);
     }
 
     @GetMapping("/faccurr")

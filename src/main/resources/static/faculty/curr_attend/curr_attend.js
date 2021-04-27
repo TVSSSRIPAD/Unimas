@@ -70,7 +70,8 @@ function fillViewData(current_course, data) {
         </th>
         <th class="xyz">
         </th>
-        <th class="xyz">
+        <th class="adate">
+            <input id="adate" type="text" required/>
         </th>
         <th class="xyz">
         Semester: ${current_sem}
@@ -118,10 +119,12 @@ function fillViewData(current_course, data) {
         let gradeData=[];
         let w = document.getElementById("cdata-view");
         let gradeIP = w.getElementsByTagName("input");
-        for(let i=0;i<gradeIP.length;i++){
+        let aaa = gradeIP[0].value;
+        console.log(aaa);
+        for(let i=1;i<gradeIP.length;i++){
             
                 console.log(gradeIP[i].value);
-                gradeData.push({sroll:gradeIP[i].name,course_id:course_id,grade:(gradeIP[i].value).length==0? "A":(gradeIP[i].value)});
+                gradeData.push({sroll:gradeIP[i].name,course_id:course_id,status:(gradeIP[i].value).length==0? "A":(gradeIP[i].value), adate:aaa});
         }
         console.log(gradeData);
         e.target.innerHTML = `

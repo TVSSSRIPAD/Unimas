@@ -41,7 +41,7 @@ public class StudentGPA {
                 '}';
     }
 
-    public StudentGPA(String sroll, int gpa, int semno) {
+    public StudentGPA(String sroll, float gpa, int semno) {
         this.sroll = sroll;
         this.gpa = gpa;
         this.semno = semno;

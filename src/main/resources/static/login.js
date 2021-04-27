@@ -29,5 +29,7 @@ console.log(response.data);
         if(x === 1){
             window.location.href = "facultyprofile"
         }else window.location.href = "profile"
+    }else{
+        window.location.href = "/";
     }
 });

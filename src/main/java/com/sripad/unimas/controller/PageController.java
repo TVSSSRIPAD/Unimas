@@ -74,6 +74,17 @@ public class PageController {
         }
         return "student/register/register.html";
     }
+
+    @GetMapping("/attendance")
+    public String attendance(@CookieValue(value="sroll", required = false) String sroll){
+        if(sroll == null || sroll.length() < 9){
+            System.out.println("Good try..");
+            return "redirect:/";
+        }
+        System.out.println("Hi");
+        return "student/attend/attend.html";
+    }
+
     @GetMapping("/grades")
     public String studentGrades(@CookieValue(value="sroll", required = false) String sroll){
         if(sroll == null || sroll.length() < 9){
@@ -103,6 +114,24 @@ public class PageController {
         return "faculty/prev_grades/prev_grades.html";
     }
 
+    @GetMapping("/admin")
+    public String admin(@CookieValue(value="faculty_id", required = false) String fac_id){
+        if(fac_id == null ){
+            System.out.println("Good try..");
+            return "redirect:/";
+        }
+        return "faculty/admin/admin.html";
+    }
+
+
+    @GetMapping("/fac_offer")
+    public String facultyOffers(@CookieValue(value="faculty_id", required = false) String fac_id){
+        if(fac_id == null ){
+            System.out.println("Good try..");
+            return "redirect:/";
+        }
+        return "faculty/offer/register.html";
+    }
     @GetMapping("/curr_grades")
     public String currGrades(@CookieValue(value="faculty_id", required = false) String fac_id){
         if(fac_id == null ){

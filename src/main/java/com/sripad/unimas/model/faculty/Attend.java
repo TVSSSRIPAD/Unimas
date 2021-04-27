@@ -2,9 +2,10 @@ package com.sripad.unimas.model.faculty;
 
 public class Attend {
     String sroll;
-    String course_id;
+    int course_id;
     String adate;
     Character status;
+
 
     public Attend() {
     }
@@ -17,11 +18,11 @@ public class Attend {
         this.sroll = sroll;
     }
 
-    public String getCourse_id() {
+    public int getCourse_id() {
         return course_id;
     }
 
-    public void setCourse_id(String course_id) {
+    public void setCourse_id(int course_id) {
         this.course_id = course_id;
     }
 
@@ -41,7 +42,7 @@ public class Attend {
         this.status = status;
     }
 
-    public Attend(String sroll, String course_id, String adate, Character status) {
+    public Attend(String sroll, int course_id, String adate, Character status) {
         this.sroll = sroll;
         this.course_id = course_id;
         this.adate = adate;
