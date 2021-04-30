@@ -3,8 +3,12 @@ package com.sripad.unimas.services;
 import com.sripad.unimas.model.Student;
 import com.sripad.unimas.model.faculty.Faculty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -19,6 +23,13 @@ public class AdminServices {
 //        int x =
 //        System.out.println(x);
         return jdbcTemplate.update("UPDATE PERSON SET PASSWORD= ?  WHERE EMAIL = ?", password,email);
+    }
+
+    public int assignHOD(int fac , int dept){
+
+        System.out.println("Here!");
+
+        return jdbcTemplate.update("UPDATE DEPARTMENT SET HOD_ID= ?  WHERE DEPT_ID = ?", fac, dept);
     }
 
     public List<Student> getStudents(int dept_id){

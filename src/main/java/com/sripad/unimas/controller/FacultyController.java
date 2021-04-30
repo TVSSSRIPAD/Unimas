@@ -120,18 +120,25 @@ public ResponseEntity<?> attend(@CookieValue(value="faculty_id" ) String fac_id,
     }
 
     @PostMapping("/faculty")
-    public ResponseEntity<String> giveGrades( ){
-         return new ResponseEntity<>("New Student could not be added. Transaction Failed", HttpStatus.BAD_REQUEST);
+    @ResponseBody
+    public ResponseEntity<String> addFaculty(@RequestBody Faculty f){
+        String errors = facultyServices.addFaculty(f, "pass");
+        if(errors.length() >  5){
+            return  new ResponseEntity<>("Faculty modified Successfully", HttpStatus.OK);
+        }
+        else{
+            return  new ResponseEntity<>("Faculty couldnot be updated. Transaction Failed", HttpStatus.BAD_REQUEST);
+        }
     }
-//
-//    @PutMapping("/faculty")
-//    ResponseEntity<String> updateStudentController(@RequestBody Student stu){
-//        if(studentService.updateStudent(stu)){
-//            return  new ResponseEntity<>("Student modified Successfully", HttpStatus.OK);
-//        }
-//        else{
-//            return  new ResponseEntity<>("Student couldnot be updated. Transaction Failed", HttpStatus.BAD_REQUEST);
-//        }
-//    }
+
+    @PutMapping("/faculty")
+    public ResponseEntity<String> updateFacultyController(@RequestBody Faculty f){
+        if(facultyServices.updateFaculty(f) >  0){
+            return  new ResponseEntity<>("Faculty modified Successfully", HttpStatus.OK);
+        }
+        else{
+            return  new ResponseEntity<>("Faculty couldnot be updated. Transaction Failed", HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

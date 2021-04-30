@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -314,4 +316,41 @@ public class FacultyServices {
         return obj;
     }
 
+    public String addFaculty(Faculty f, String password){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("ADD_FACULTY");
+        Map<String , Object> inParams = new HashMap<>();
+        inParams.put("FNAME", f.getFname());
+        inParams.put("DEPT", f.getDept_id());
+        inParams.put("EMAIL", f.getEmail());
+        inParams.put("PHONE", f.getPhone());
+        inParams.put("GENDER", f.getGender());
+        inParams.put("SALARY", f.getSalary());
+        inParams.put("JOB_ID", f.getJob_id());
+        inParams.put("PASSWORD", password);
+        System.out.println("Here!");
+
+        SqlParameterSource in  = new MapSqlParameterSource(inParams);
+        try{
+//            System.out.println(f);
+            Map<String, Object> out = jdbcCall.execute(in);
+            System.out.println(out.get("FID"));
+            return ((String)out.get("FID"));
+        }
+        catch(DataAccessException error){
+            String errors = null;
+            String lines[] =  error.getCause().toString().split("\\r?\\n");
+            errors += lines[0];
+            errors += "\n";
+            System.out.println("Error is " + error.getCause().toString()  );
+            return errors;
+        }
+
+    }
+
+    public int updateFaculty(Faculty f){
+//        System.out.println("Hi");
+        return jdbcTemplate.update("UPDATE FACULTY SET FNAME=?,   PHONE = ?, SALARY = ? WHERE FACULTY_ID=?",
+                f.getFname(),  f.getPhone(), f.getSalary(),f.getFaculty_id());
+
+    }
 }

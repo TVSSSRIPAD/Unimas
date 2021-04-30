@@ -3,6 +3,7 @@ package com.sripad.unimas.controller;
 import com.sripad.unimas.model.AuthenticationRequest;
 import com.sripad.unimas.model.Student;
 import com.sripad.unimas.model.faculty.Faculty;
+import com.sripad.unimas.model.faculty.HOD_Dept;
 import com.sripad.unimas.services.AdminServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,11 +59,9 @@ public class AdminController {
 
     @PutMapping("/updatepassword")
     @ResponseBody
-    public  ResponseEntity<?> updatePassword(@CookieValue(value="dept_id") String dept_id, @RequestBody AuthenticationRequest req){
+    public  ResponseEntity<?> updatePassword( @RequestBody AuthenticationRequest req){
         System.out.println(req.getEmail() + " oo " + req.getPassword());
-        if(dept_id == null || dept_id.equals("-1")){
-            return  new ResponseEntity<>("Password couldnot be updated. Transaction Failed2", HttpStatus.BAD_REQUEST);
-        }else{
+
             int x = adminServices.updatepassword(req.getEmail(), req.getPassword());
 
             System.out.println(x);
@@ -72,8 +71,23 @@ public class AdminController {
             else{
                 return  new ResponseEntity<>("Password couldnot be updated. Transaction Failed", HttpStatus.BAD_REQUEST);
             }
+
+    }
+
+    @PutMapping("/updatehod")
+    @ResponseBody
+    public  ResponseEntity<?> updateHOD(@RequestBody HOD_Dept req){
+        int x = adminServices.assignHOD(req.getFid(), req.getDept());
+
+        System.out.println(x);
+        if(x > 0){
+            return  new ResponseEntity<>("Password updated Successfully", HttpStatus.OK);
+        }
+        else{
+            return  new ResponseEntity<>("Password couldnot be updated. Transaction Failed", HttpStatus.BAD_REQUEST);
         }
     }
+
 
 
 }
