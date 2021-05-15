@@ -40,6 +40,7 @@ public class AdminController {
             return ResponseEntity.status(400).body("Bad Request. LogOut and LogIn again properly");
         }
         int dept =  Integer.parseInt(dept_id);
+        System.out.println(dept_id);
         List<Faculty> faculties = adminServices.getFaculty(dept);
         return ResponseEntity.status(200).body(faculties);
     }

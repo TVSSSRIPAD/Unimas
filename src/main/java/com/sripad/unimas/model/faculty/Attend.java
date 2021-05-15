@@ -4,7 +4,7 @@ public class Attend {
     String sroll;
     int course_id;
     String adate;
-    Character status;
+    String status;
 
 
     public Attend() {
@@ -34,15 +34,15 @@ public class Attend {
         this.adate = adate;
     }
 
-    public Character getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Character status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Attend(String sroll, int course_id, String adate, Character status) {
+    public Attend(String sroll, int course_id, String adate, String status) {
         this.sroll = sroll;
         this.course_id = course_id;
         this.adate = adate;

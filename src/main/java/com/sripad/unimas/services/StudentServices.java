@@ -55,24 +55,24 @@ public class StudentServices {
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StudentGrades.class), sroll);
     }
 
-    public List<StudentGPA> getGrades(String sroll){
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("COMPUTE_GRADE");
-        Map<String , Object> inParams = new HashMap<>();
-        inParams.put("SROLL", sroll);
-        List<StudentGPA> sgpa = new ArrayList<>();
-
-        for(int i = 1; i <= 8; i++){
-
-            inParams.put("SEM", i);
-            SqlParameterSource in  = new MapSqlParameterSource(inParams);
-            Map<String, Object> out = jdbcCall.execute(in);
-//            System.out.println(out.get("GPA"));
-            if(((BigDecimal)out.get("GPA")).floatValue() > 0)
-            sgpa.add( new StudentGPA(sroll, ((BigDecimal)out.get("GPA")).floatValue(), i));
-
-        }
-        return sgpa;
-    }
+//    public List<StudentGPA> getGrades(String sroll){
+//        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("COMPUTE_GRADE");
+//        Map<String , Object> inParams = new HashMap<>();
+//        inParams.put("SROLL", sroll);
+//        List<StudentGPA> sgpa = new ArrayList<>();
+//
+//        for(int i = 1; i <= 8; i++){
+//
+//            inParams.put("SEM", i);
+//            SqlParameterSource in  = new MapSqlParameterSource(inParams);
+//            Map<String, Object> out = jdbcCall.execute(in);
+////            System.out.println(out.get("GPA"));
+//            if(((BigDecimal)out.get("GPA")).floatValue() > 0)
+//            sgpa.add( new StudentGPA(sroll, ((BigDecimal)out.get("GPA")).floatValue(), i));
+//
+//        }
+//        return sgpa;
+//    }
 
     public List<StudentGPA> getCGBySroll(String sroll){
         String sql = "SELECT sroll,gpa, semno FROM GPALIST  where sroll = ? order by semno";
@@ -181,6 +181,7 @@ public class StudentServices {
 
                 String lines[] =  error.getCause().toString().substring(33).split("\\r?\\n");
                 errors += lines[0];
+//                System.out.println(lines[0]);
                 errors += "\n";
                 System.out.println("Error is " + error.getCause().toString().substring(33)  );
             }

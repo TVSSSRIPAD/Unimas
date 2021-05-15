@@ -38,6 +38,15 @@ public class FacultyController {
 
         return ResponseEntity.status(200).body(obj);
     }
+    @GetMapping("/facprofile2")
+    @ResponseBody
+    public ResponseEntity<?> getFaculty2(@RequestBody int fac_id ){
+        Faculty s = facultyServices.getFaculty(fac_id);
+        int dept_id = facultyServices.getDeptIfHOD(fac_id);
+
+
+        return ResponseEntity.status(200).body(s);
+    }
 
     @PostMapping("/facultyauth")
     @ResponseBody

@@ -1,7 +1,7 @@
 document.getElementById("t").addEventListener('click',async ()=>{
     let data="";
     let response = await axios.get('http://localhost:8081/gettoppers');
-    
+    console.log()
     if(response.status==200){
         data = response.data;
     }
@@ -236,7 +236,7 @@ document.getElementById("s").addEventListener('click',async ()=>{
 
 document.getElementById("f").addEventListener('click',async ()=>{
     let data="";
-    let response = await axios.get('htpp://localhost:8081/getfac');
+    let response = await axios.get('http://localhost:8081/getfac');
     
     if(response.status==200){
         data = response.data;

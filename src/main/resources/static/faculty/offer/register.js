@@ -425,7 +425,7 @@ function fillCourseList(coursesList){
         sem_wise.push([]);
     }
     for(let i=0;i<coursesList.length;i++){
-        sem_wise[coursesList[i].semno-1].push(coursesList[i]);
+        sem_wise[coursesList[i][4]-1].push(coursesList[i]);
     }
   
    for(let i=0;i<8;i++){
@@ -438,7 +438,7 @@ function fillCourseList(coursesList){
 }
 function fillCourseTable(courseData,semno){
     let lc = document.getElementById("lcourses");
-    [cid, cname, credits, ctype, semno]
+    // [cid, cname, credits, ctype, semno] = courseData
     let x =`
     <table class="w-100 mb-3">
         <tr>
@@ -447,6 +447,7 @@ function fillCourseTable(courseData,semno){
         <tr>
         <th>S.no</th>
         <th>Course Name</th>
+        <th>Course ID</th>
         <th>Course Type</th>
         <th>Credits</th>
         <th>Semester</th>
@@ -459,6 +460,9 @@ function fillCourseTable(courseData,semno){
             ${j+1}
            </td> 
            <td>
+            ${courseData[j][0]}
+           </td> 
+            <td>
             ${courseData[j][1]}
            </td> 
            <td>

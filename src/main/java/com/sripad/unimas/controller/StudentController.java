@@ -29,6 +29,12 @@ public class StudentController {
         Student s = studentService.getStudent(sroll);
         return ResponseEntity.status(200).body(s);
     }
+    @GetMapping("/myprofile2")
+    public ResponseEntity<?>  myProfile2(@RequestBody String sroll){
+
+        Student s = studentService.getStudent(sroll);
+        return ResponseEntity.status(200).body(s);
+    }
 
     @GetMapping("/getcurrattend")
     @ResponseBody
@@ -58,9 +64,9 @@ public class StudentController {
             return ResponseEntity.status(400).body("Bad Request");
         }
         List<StudentGrades> sgrades = studentService.getGradesBySroll(sroll);
-//        List<StudentGPA> sgpa = studentService.getCGBySroll(sroll);
-        List<StudentGPA> sgpa2 = studentService.getGrades(sroll);
-        StudentDetails studentDetails = new StudentDetails( sgrades, sgpa2);
+        List<StudentGPA> sgpa = studentService.getCGBySroll(sroll);
+//        List<StudentGPA> sgpa2 = studentService.getGrades(sroll);
+        StudentDetails studentDetails = new StudentDetails( sgrades, sgpa);
         return ResponseEntity.status(200).body(studentDetails);
     }
 

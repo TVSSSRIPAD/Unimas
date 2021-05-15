@@ -117,7 +117,7 @@ function fillFormData(offeredCourses){
             //console.log(p);
             p.addEventListener("click",async (e)=>{
                     e.preventDefault();
-                    p.disabled=true;
+                    // p.disabled=true;
                     //console.log("clicked");
                     let regDiv = document.getElementById("reg");
                     let chkbx = regDiv.getElementsByTagName("input");
@@ -151,6 +151,8 @@ function fillFormData(offeredCourses){
                         console.log(e.response.data);
                         console.log(e.response);
                         console.log(e.response.headers);
+                        p.innerHTML = `<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                    Refresh page and try again...`;
                         document.getElementById("info").innerHTML=
                             `
                             <div class="alert alert-danger" role="alert">

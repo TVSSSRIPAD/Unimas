@@ -94,37 +94,23 @@ public class FacultyServices {
 
         for(Attend x: attends){
             try{
-                MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-                parameters.addValue("sroll", x.getSroll() );
-//                parameters.addValue("cid", );
-                parameters.addValue("adate", x.getAdate() , Types.DATE);
-//                parameters.addValue("status",  );
-
-                int c = njdbc.update("INSERT INTO ATTENDANCE (sroll, course_id, adate, status) VALUES" +
-                        "(:sroll,  x.getCourse_id(), :adate, x.getStatus())", parameters);
-                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                DateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
-                String inputDateStr= x.getAdate();
-                Date date = outputFormat.parse("29-04-2021");
-
-//                String outputDateStr = outputFormat.format(x.getAdate());
-//                date = outputFormat
-                System.out.println(x.getAdate() + " " + x.getSroll() + " " + x.getCourse_id() + " "   );
-//                int c = jdbcTemplate.update(
-//                        "INSERT INTO ATTENDANCE (sroll, course_id, adate, status) VALUES (?, ?, ?,?)",
-//                        x.getSroll(), x.getCourse_id(), date, 'P'
-//                );
+                System.out.println( x.getStatus() + " " + x.getSroll() + " " + x.getCourse_id() + " "   );
+                int c = jdbcTemplate.update(
+                        "INSERT INTO ATTENDANCE (sroll, course_id, adate, status) VALUES (?, ?, SYSDATE,?)",
+                        x.getSroll(), x.getCourse_id(),  x.getStatus()
+                );
                 System.out.println(c + " is C ");
             }
-            catch (DataAccessException | ParseException error){
-                errors += error.getCause().toString().substring(33);
+            catch (DataAccessException error){
+                errors += error.getCause().toString() ;
 
-                System.out.println("Error is " + error.getCause().toString().substring(33 ));
+                System.out.println("Error is " + error  );
             }
         }
         return errors;
     }
+
 
     public Object offerCoursesList(int fac_id){
 

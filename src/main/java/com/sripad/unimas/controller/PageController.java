@@ -132,6 +132,7 @@ public class PageController {
         }
         return "faculty/offer/register.html";
     }
+
     @GetMapping("/curr_grades")
     public String currGrades(@CookieValue(value="faculty_id", required = false) String fac_id){
         if(fac_id == null ){
@@ -150,4 +151,26 @@ public class PageController {
         return "faculty/curr_attend/curr_attend.html";
     }
 
+
+    @GetMapping("addstudentadmin")
+    public String addStu(){
+        return "admin/studAdd.html";
+    }
+
+
+    @GetMapping("editstudentadmin")
+    public String editStu(){
+        return "admin/studEdit.html";
+    }
+
+
+    @GetMapping("addfacadmin")
+    public String addFac(){
+        return "admin/facAdd.html";
+    }
+
+    @GetMapping("editfacadmin")
+    public String editFac(){
+        return "admin/facEdit.html";
+    }
 }

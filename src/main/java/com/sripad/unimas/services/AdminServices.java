@@ -43,9 +43,11 @@ public class AdminServices {
         }
         return studentList;
     }
+
     public List<Faculty> getFaculty(int dept_id){
         String sql = "SELECT * FROM Faculty WHERE DEPT_ID = ? ";
         Object[] params = {dept_id};
+        System.out.println(dept_id);
 
         List<Faculty> facultyList = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Faculty.class), params);
 
@@ -56,7 +58,7 @@ public class AdminServices {
     }
 
     public List<Object> getToppers(int dept_id){
-        String sql = "SELECT C.SROLL,C.SNAME, C.BATCH, C.PROGRAM , C.CGPA FROM CGPALIST C WHERE C.DEPT_ID = ? AND (C.BATCH, C.CGPA) IN (SELECT  BATCH,  MAX(CGPA) FROM CGPALIST GROUP BY BATCH ) ORDER BY BATCH";
+        String sql = " SELECT C.SROLL,C.SNAME, C.BATCH, C.PROGRAM , C.CGPA FROM CGPALIST C WHERE C.DEPT_ID = ? AND  (C.BATCH, C.PROGRAM, C.CGPA) IN (SELECT  BATCH,PROGRAM,  MAX(CGPA) FROM CGPALIST GROUP BY BATCH,PROGRAM ) ORDER BY BATCH,PROGRAM";
         Object[] params = {dept_id};
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, params);
 

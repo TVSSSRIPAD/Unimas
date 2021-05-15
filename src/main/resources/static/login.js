@@ -2,7 +2,7 @@ let l = document.getElementById("submit-btn");
 console.log("I am here!")
 l.addEventListener("click", async (e) => {
     e.preventDefault();
-e.target.disabled = true;
+// e.target.disabled = true;
 console.log("clicked");
 
 let email = document.getElementById("email");
@@ -16,15 +16,16 @@ if(dd.checked){
     x = 1;
     url = "http://localhost:8081/facultyauth";
 }
-let response = await axios({
-    url: url,
-    method: "post",
-    data: {
-        email: email.value,
-        password: pass.value
-    }
-});
-console.log(response.data);
+try{
+    let response = await axios({
+        url: url,
+        method: "post",
+        data: {
+            email: email.value,
+            password: pass.value
+        }
+    });
+    console.log(response.data);
     if(response.status < 400){
         if(x === 1){
             window.location.href = "facultyprofile"
@@ -32,4 +33,16 @@ console.log(response.data);
     }else{
         window.location.href = "/";
     }
+}
+catch(e){
+    console.log(e.response.data);
+    console.log(e.response);
+    console.log(e.response.headers);
+    document.getElementById("info").innerHTML=
+        `
+         <div class="alert alert-danger" role="alert">
+            "Incorrect email id or password"
+         </div>
+         `
+}
 });
