@@ -4,7 +4,7 @@
 ##### Backend:
  - Spring Boot
  - JdbcTemplate
- - Orcle Database
+ - Oracle Database
 
 ##### FrontEnd:
  - React
